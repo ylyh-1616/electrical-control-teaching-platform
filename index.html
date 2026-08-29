@@ -2763,8 +2763,26 @@
         flex-direction: column;
       }
     }
+
+    .module-extra-controls {
+      margin-top: 10px;
+    }
+
+    .module-extra-controls:empty {
+      display: none;
+    }
   </style>
   <link rel="stylesheet" href="./src/platform/shell/platform-shell-v1.css?v=20260822-2" />
+  <link rel="stylesheet" href="./src/chapters/chapter01/modules/chapter01-circuits.css?v=20260825-3" />
+  <link rel="stylesheet" href="./src/components/electrical-simulation-primitives.css" />
+  <link rel="stylesheet" href="./src/chapters/chapter01/modules/ch01_timed_auto_stop/styles.css" />
+  <link rel="stylesheet" href="./src/chapters/chapter02/modules/ch02_mixed_control/styles.css" />
+  <link rel="stylesheet" href="./src/chapters/chapter02/modules/ch02_multisite_control/styles.css" />
+  <link rel="stylesheet" href="./src/chapters/chapter02/modules/ch02_manual_star_delta/styles.css" />
+  <link rel="stylesheet" href="./src/chapters/chapter02/modules/ch02_time_sequence/styles.css" />
+  <link rel="stylesheet" href="./src/chapters/chapter02/modules/ch02_two_motor_sequence/module.css" />
+
+  <link rel="stylesheet" href="./src/chapters/chapter02/modules/ch02_machine_tool_circuits/module.css" />
 </head>
 <body>
   <div class="app-shell">
@@ -2798,6 +2816,7 @@
           <div id="experimentRoot" class="experiment-root">
           <div id="placeholderCanvas" class="module-canvas"></div>
 
+          <div id="chapterModuleCanvas" class="module-canvas hidden"></div>
           <div id="forwardReverseCanvas" class="module-canvas hidden">
             <div class="board-shell stage-board calibration-shell">
           <svg id="boardSvg" viewBox="0 0 1509 1134" preserveAspectRatio="xMidYMid meet" aria-label="电器控制教学板">
@@ -3107,6 +3126,7 @@
               <strong id="tripFr2Label">FR2 过载</strong>
             </button>
           </div>
+          <div id="moduleExtraControls" class="control-grid module-extra-controls"></div>
           <div class="btn-row">
             <button id="resetFr" class="small-btn">FR1 复位</button>
             <button id="resetFr2" class="small-btn hidden">FR2 复位</button>
@@ -3215,6 +3235,19 @@
   <script src="./src/registry/module-registry.js"></script>
   <script src="./src/platform/module-loader/module-loader.js"></script>
   <script src="./src/platform/module-adapter/facade-module-adapter.js"></script>
+  <script src="./src/components/electrical-simulation-primitives.js"></script>
+  <script src="./src/chapters/chapter01/modules/_shared/direct-start-runtime.js?v=20260825-4"></script>
+  <script src="./src/chapters/chapter01/modules/ch01_jog/circuit-data.js"></script>
+  <script src="./src/chapters/chapter01/modules/ch01_direct_start_protection/circuit-data.js"></script>
+  <script src="./src/chapters/chapter01/modules/ch01_jog/facade.js"></script>
+  <script src="./src/chapters/chapter01/modules/ch01_direct_start_protection/facade.js"></script>
+  <script src="./src/chapters/chapter01/modules/ch01_jog/module.js"></script>
+  <script src="./src/chapters/chapter01/modules/ch01_direct_start_protection/module.js"></script>
+  <script src="./src/chapters/chapter01/modules/ch01_timed_auto_stop/circuit.data.js"></script>
+  <script src="./src/chapters/chapter01/modules/ch01_timed_auto_stop/solver.js"></script>
+  <script src="./src/chapters/chapter01/modules/ch01_timed_auto_stop/renderer.js"></script>
+  <script src="./src/chapters/chapter01/modules/ch01_timed_auto_stop/facade.js"></script>
+  <script src="./src/chapters/chapter01/modules/ch01_timed_auto_stop/module.js"></script>
   <script src="./src/chapters/chapter02/modules/ch02_main_control/facade.js"></script>
   <script src="./src/chapters/chapter02/modules/ch02_jog/facade.js"></script>
   <script src="./src/chapters/chapter02/modules/ch02_continuous/facade.js"></script>
@@ -3224,10 +3257,83 @@
   <script src="./src/chapters/chapter02/modules/ch02_continuous/module.js"></script>
   <script src="./src/chapters/chapter02/modules/ch02_reverse/module.js"></script>
   <script src="./src/platform/navigation/chapter-navigation.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_mixed_control/circuit.data.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_mixed_control/solver.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_mixed_control/renderer.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_mixed_control/facade.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_mixed_control/module.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_multisite_control/circuit.data.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_multisite_control/solver.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_multisite_control/renderer.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_multisite_control/facade.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_multisite_control/module.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_manual_star_delta/circuit.data.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_manual_star_delta/solver.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_manual_star_delta/renderer.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_manual_star_delta/facade.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_manual_star_delta/module.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_time_sequence/circuit.data.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_time_sequence/solver.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_time_sequence/renderer.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_time_sequence/facade.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_time_sequence/module.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_two_motor_sequence/runtime.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_two_motor_sequence/facade.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_two_motor_sequence/module.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+  <script src="./src/chapters/chapter02/modules/ch02_machine_tool_circuits/circuit.data.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_machine_tool_circuits/solver.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_machine_tool_circuits/view.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_machine_tool_circuits/teaching.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_machine_tool_circuits/facade.js"></script>
+  <script src="./src/chapters/chapter02/modules/ch02_machine_tool_circuits/module.js"></script>
   <script>
     window.__FORWARD_REVERSE_BUILD_ID__ = "artifact-audit-2026-08-14-v1";
 
     const moduleCatalog = {
+      "ch01-jog-control": {
+        code: "01",
+        name: "点动控制",
+        experimentTitle: "点动控制演示",
+        experimentSubtitle: "按住启动按钮时，KM 线圈得电并接通主回路；按钮松开后，线圈释放，电机立即停止。",
+        principleTitle: "点动控制原理",
+        principleText: "点动线路没有自锁支路，按钮的按下时间直接决定 KM 与电动机的运行时间。",
+        promptText: "先合上 QF，再按住并松开 SB；也可触发 FR 过载，观察保护触点切断控制回路。",
+        footerTip: "参考 PDF 第 3、12 页；电路由模块数据驱动，可重复复位和修改。",
+        placeholderTag: "", placeholderNote: "", zones: []
+      },
+      "ch01-direct-start-protection": {
+        code: "02",
+        name: "综合直接启动保护",
+        experimentTitle: "综合直接启动保护演示",
+        experimentSubtitle: "QF1、FU、SB1、SB2、KM1、FR1 和 M 组成完整直接启动链路，具有自锁、停止和过载保护功能。",
+        principleTitle: "综合直接启动保护原理",
+        principleText: "SB1 建立启动通路，KM1 辅助常开触点完成自锁；SB2 或 FR1 断开控制回路后，KM1 释放，电动机停止。",
+        promptText: "依次执行 QF1 合闸、SB1 启动、SB2 停止、FR1 过载与复位，观察完整保护链路。",
+        footerTip: "参考 PDF 第 11 页；复位保护不会自动重启。",
+        placeholderTag: "", placeholderNote: "", zones: []
+      },
+      "timed-auto-stop": {
+        code: "03",
+        name: "定时自动停止",
+        experimentTitle: "电机启动后定时自动停止",
+        experimentSubtitle: "KM1 自锁后 KT1、KT2 同步计时，达到 120 秒后由延时触点自动切断控制回路。",
+        principleTitle: "定时自动停止原理",
+        principleText: "启动后 KM1 保持运行，KT1、KT2 进入计时；累计到 120 秒时 KT2 延时常闭触点断开，电动机自动停止。",
+        promptText: "合上 QF1、启动电机，再按 30 秒步长推进计时，观察 120 秒到时动作。",
+        footerTip: "Current Flow 与状态均来自模块 Solver，切换模块后重新初始化。",
+        placeholderTag: "", placeholderNote: "", zones: []
+      },
       "main-control": {
         code: "01",
         name: "主电路与控制电路",
@@ -3282,7 +3388,78 @@
         placeholderTag: "",
         placeholderNote: "",
         zones: []
+      },
+      "mixed-control": {
+        code: "05",
+        name: "点动与长动混合控制",
+        experimentTitle: "点动与长动混合控制演示",
+        experimentSubtitle: "比较三种点动与长动混合接线，观察点动、自锁和中间继电器的因果差异。",
+        principleTitle: "点动与长动混合控制原理",
+        principleText: "点动路径只在按钮按住期间导通，长动路径通过辅助触点保持；三种接线均由同一 Solver 状态驱动。",
+        promptText: "切换三种接线方式，分别验证长动、自锁、点动、停止和 FR1 保护。",
+        footerTip: "PR #7 最终版整体替换 PR #3 中间版，不混用两代实现。",
+        placeholderTag: "", placeholderNote: "", zones: []
+      },
+      "multisite-control": {
+        code: "06",
+        name: "多地点控制",
+        experimentTitle: "多地点远程控制演示",
+        experimentSubtitle: "两个启动点并联、两个停止点串联，共同控制同一 KM1 与电动机。",
+        principleTitle: "多地点控制原理",
+        principleText: "任一地点均可启动；任一停止按钮都能切断自锁回路，FR1 过载对所有地点同时生效。",
+        promptText: "交叉使用两地启动和停止按钮，验证并联启动、串联停止与状态隔离。",
+        footerTip: "新版自身验收与 PR #3 旧版行为门槛同时保留。",
+        placeholderTag: "", placeholderNote: "", zones: []
+      },
+      "manual-star-delta": {
+        code: "09",
+        name: "手动星—三角启动",
+        experimentTitle: "手动星形—三角形启动演示",
+        experimentSubtitle: "先以星形接法降压启动，再在互锁条件下手动切换为三角形运行。",
+        principleTitle: "手动星—三角启动原理",
+        principleText: "KMY 与 KMΔ 不能同时吸合；切换时先释放星形接触器，再投入三角形接触器。",
+        promptText: "依次合闸、星形启动、三角切换和停止，观察接触器互锁。",
+        footerTip: "模块通过基础验收后升级为正式可展示状态。",
+        placeholderTag: "", placeholderNote: "", zones: []
+      },
+      "time-sequence-control": {
+        code: "10",
+        name: "时间原则控制",
+        experimentTitle: "时间原则控制线路演示",
+        experimentSubtitle: "KT1、KT2、KT3 按顺序动作，逐级切除转子电阻。",
+        principleTitle: "时间原则控制原理",
+        principleText: "启动后按时序依次切除 R1、R2、R3，全部完成后进入全速运行。",
+        promptText: "启动后逐步推进时序，观察三段电阻与接触器状态变化。",
+        footerTip: "模块通过基础验收后升级为正式可展示状态。",
+        placeholderTag: "", placeholderNote: "", zones: []
+      },
+      "machine-tool-circuits": {
+        code: "07",
+        name: "\u673a\u5e8a\u7efc\u5408\u7ebf\u8def",
+        experimentTitle: "\u673a\u5e8a\u7efc\u5408\u7ebf\u8def\u6f14\u793a",
+        experimentSubtitle: "CA6140 \u5367\u5f0f\u8f66\u5e8a\u4e0e Z3040 \u6447\u81c2\u94bb\u5e8a\u7535\u6c14\u63a7\u5236\u7ebf\u8def\u3002",
+        principleTitle: "\u673a\u5e8a\u7efc\u5408\u7ebf\u8def\u539f\u7406",
+        principleText: "\u7efc\u5408\u9a8c\u8bc1\u4e3b\u8f74\u3001\u6b63\u53cd\u8f6c\u3001\u6447\u81c2\u5347\u964d\u3001\u6db2\u538b\u4e0e\u9650\u4f4d\u4fdd\u62a4\u3002",
+        promptText: "\u5728 CA6140 \u4e0e Z3040 \u4e4b\u95f4\u5207\u6362\uff0c\u89c2\u5bdf SQ\u3001KT\u3001YV \u4e0e\u53cc\u4fdd\u62a4\u72b6\u6001\u3002",
+        footerTip: "Current Flow \u7531 Solver wire IDs \u4e0e circuit.data routePoints \u552f\u4e00\u9a71\u52a8\u3002",
+        placeholderTag: "",
+        placeholderNote: "",
+        zones: []
+      },
+      "two-motor-sequence": {
+        code: "08",
+        name: "两台电动机顺序控制",
+        experimentTitle: "两台电动机顺序控制演示",
+        experimentSubtitle: "1M 启动并使 KM1 顺序允许触点闭合后，2M 才能启动；停止 1M 时 2M 同步停止。",
+        principleTitle: "两台电动机顺序启动原理",
+        principleText: "KM1 的辅助常开触点串入 KM2 控制支路，构成先启动 1M、再启动 2M 的顺序许可。",
+        promptText: "先合上 QF1，尝试直接启动 2M；再依次启动 1M、2M，并验证停止与两级过载保护。",
+        footerTip: "模块私有状态经 Facade 输出，电路路径复用主电路正式 routePoints。",
+        placeholderTag: "",
+        placeholderNote: "",
+        zones: []
       }
+
     };
 
     const uiState = {
@@ -3537,6 +3714,8 @@
       experimentSubtitle: document.getElementById("experimentSubtitle"),
       placeholderCanvas: document.getElementById("placeholderCanvas"),
       forwardReverseCanvas: document.getElementById("forwardReverseCanvas"),
+      chapterModuleCanvas: document.getElementById("chapterModuleCanvas"),
+      moduleExtraControls: document.getElementById("moduleExtraControls"),
       boardShell: document.querySelector("#forwardReverseCanvas .board-shell"),
       boardSvg: document.getElementById("boardSvg"),
       toggleQf: document.getElementById("toggleQf"),
@@ -11583,15 +11762,18 @@
       refs.referenceSourceImage.setAttribute("preserveAspectRatio", "none");
 
       const live = isLiveCircuitModule();
+      const moduleCanvas = isModuleCanvasFacade();
+      const interactive = live || moduleCanvas;
       const showDeveloperControls = live && hasDeveloperToolsEnabled();
       refs.forwardReverseCanvas.classList.toggle("hidden", !live);
-      refs.placeholderCanvas.classList.toggle("hidden", live);
+      refs.chapterModuleCanvas.classList.toggle("hidden", !moduleCanvas);
+      refs.placeholderCanvas.classList.toggle("hidden", interactive);
       refs.developerCalibrationCard.classList.toggle("hidden", !showDeveloperControls);
       refs.developerPreviewCard.classList.toggle("hidden", !showDeveloperControls || isMainControlModule() || isContinuousControlModule() || isJogControlModule());
       refs.resetDemo.classList.toggle("hidden", !showDeveloperControls);
       refs.solverDebugCard.classList.toggle("hidden", !(showDeveloperControls && isSimulationSolverMode() && state.debug.solverPanel));
 
-      if (!live) {
+      if (!interactive) {
         refs.placeholderCanvas.innerHTML = buildPlaceholderMarkup(uiState.currentModule);
       }
 
@@ -11608,7 +11790,7 @@
         refs.resetFr2,
         refs.resetDemo
       ].forEach((button) => {
-        button.disabled = !live || (state.calibration.enabled && !isSimulationSolverMode());
+        button.disabled = !interactive || (live && state.calibration.enabled && !isSimulationSolverMode());
       });
 
       const facadeOperationViewModel = getCurrentFacadeInstance()?.getOperationViewModel();
@@ -11689,6 +11871,12 @@
         refs.toggleQf.disabled = qfClosed;
         refs.openQf.disabled = !qfClosed;
       }
+    }
+
+    function isModuleCanvasFacade() {
+      const current = platformModuleLoader?.getCurrent();
+      return current?.definition?.meta?.integrationMode === "facade-v1"
+        && current.definition.meta.renderTarget === "module-canvas";
     }
 
     function setContinuousControlOperationState(patch, actionMessage) {
@@ -11974,6 +12162,14 @@
     function render() {
       updateModuleShell();
       renderActionFeedback();
+
+      if (isModuleCanvasFacade()) {
+        const facadeInstance = getCurrentFacadeInstance();
+        facadeInstance?.render();
+        renderCurrentFacadeStatusViewModel();
+        renderFacadeTeachingFeedback(facadeInstance?.buildTeachingFeedback());
+        return;
+      }
 
       if (isContinuousControlModule()) {
         renderContinuousControlModule();
@@ -12457,7 +12653,7 @@
       if (phase === "press") actionType = control && control.pressAction;
       if (phase === "release") actionType = control && control.releaseAction;
       if (!actionType) return false;
-      dispatchCurrentFacadeAction(actionType, payload);
+      dispatchCurrentFacadeAction(actionType, { ...(control.payload || {}), ...payload });
       return true;
     }
 
@@ -12487,37 +12683,33 @@
     }
 
     function handleProtectionPlatformAction() {
-      const facadeInstance = getCurrentFacadeInstance();
-      const viewModel = facadeInstance && facadeInstance.getOperationViewModel();
-      const actionType = viewModel && viewModel.protection && viewModel.protection.toggleAction;
-      if (actionType) return dispatchCurrentFacadeAction(actionType);
+      const protection = getCurrentFacadeProtection("primary");
+      if (protection?.toggleAction) return dispatchCurrentFacadeAction(protection.toggleAction, protection.togglePayload || {});
       return handleTripFrButtonClick();
     }
 
     function handleProtectionResetPlatformAction() {
-      const facadeInstance = getCurrentFacadeInstance();
-      const viewModel = facadeInstance && facadeInstance.getOperationViewModel();
-      const actionType = viewModel && viewModel.protection && viewModel.protection.resetAction;
-      if (actionType) return dispatchCurrentFacadeAction(actionType);
+      const protection = getCurrentFacadeProtection("primary");
+      if (protection?.resetAction) return dispatchCurrentFacadeAction(protection.resetAction, protection.resetPayload || {});
       return resetFr();
     }
 
     function getCurrentFacadeProtection(slot) {
       const facadeInstance = getCurrentFacadeInstance();
       const viewModel = facadeInstance && facadeInstance.getOperationViewModel();
-      const protections = viewModel?.protections || [];
+      const protections = viewModel?.protections || (viewModel?.protection ? [viewModel.protection] : []);
       return protections.find((item) => item.slot === slot && item.visible !== false) || null;
     }
 
     function handleSecondaryProtectionPlatformAction() {
-      const actionType = getCurrentFacadeProtection("secondary")?.toggleAction;
-      if (actionType) return dispatchCurrentFacadeAction(actionType);
+      const protection = getCurrentFacadeProtection("secondary");
+      if (protection?.toggleAction) return dispatchCurrentFacadeAction(protection.toggleAction, protection.togglePayload || {});
       return handleTripFr2ButtonClick();
     }
 
     function handleSecondaryProtectionResetPlatformAction() {
-      const actionType = getCurrentFacadeProtection("secondary")?.resetAction;
-      if (actionType) return dispatchCurrentFacadeAction(actionType);
+      const protection = getCurrentFacadeProtection("secondary");
+      if (protection?.resetAction) return dispatchCurrentFacadeAction(protection.resetAction, protection.resetPayload || {});
       return resetFr2();
     }
 
@@ -12530,7 +12722,7 @@
     }
 
     function openQf1() {
-      if (!isLiveCircuitModule() || !isSimulationSolverMode() || !isCurrentQfClosed()) return;
+      if (!getCurrentFacadeInstance() || !isCurrentQfClosed()) return;
       if (dispatchCurrentFacadeAction("POWER_OPEN")) return;
       toggleQf1();
     }
@@ -13443,6 +13635,7 @@
       if (!moduleCatalog[routeId]) return;
       if (platformModuleLoader) {
         platformModuleLoader.load(moduleId, { reason: "navigation" });
+        render();
         return;
       }
       state.actionFeedback = {
@@ -13464,6 +13657,28 @@
       return current.instance;
     }
 
+    function renderFacadeExtraControls(controls, coreSlots) {
+      refs.moduleExtraControls.replaceChildren();
+      (controls || []).filter((control) => control.visible !== false && !coreSlots.has(control.slot))
+        .forEach((control) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "ctrl-btn";
+          if (control.buttonClass) button.classList.add(control.buttonClass);
+          button.dataset.facadeSlot = control.slot;
+          button.disabled = Boolean(control.disabled);
+          const chip = document.createElement("span");
+          chip.className = "chip";
+          const label = document.createElement("strong");
+          label.textContent = control.label || control.slot;
+          const stateText = document.createElement("span");
+          stateText.className = "ctrl-btn-status";
+          stateText.textContent = control.stateText || "";
+          button.append(chip, label, stateText);
+          refs.moduleExtraControls.appendChild(button);
+        });
+    }
+
     function renderFacadeOperationViewModel(viewModel) {
       const slotMap = {
         primary: { button: refs.pressSb1, label: refs.pressSb1Label, state: refs.pressSb1State },
@@ -13472,6 +13687,7 @@
         quaternary: { button: refs.pressSb4, label: refs.pressSb4Label, state: refs.pressSb4State }
       };
       const controlsBySlot = Object.fromEntries((viewModel.controls || []).map((control) => [control.slot, control]));
+      renderFacadeExtraControls(viewModel.controls, new Set(Object.keys(slotMap)));
       Object.entries(slotMap).forEach(([slot, binding]) => {
         const control = controlsBySlot[slot] || { visible: false };
         binding.button.classList.toggle("hidden", control.visible === false);
@@ -13481,7 +13697,7 @@
         if (binding.state) binding.state.textContent = control.stateText || "";
         binding.button.disabled = control.visible === false
           || Boolean(control.disabled)
-          || (state.calibration.enabled && !isSimulationSolverMode());
+          || (isLiveCircuitModule() && state.calibration.enabled && !isSimulationSolverMode());
       });
 
       refs.toggleQf.textContent = viewModel.power.closeLabel;
@@ -13537,6 +13753,29 @@
         binding.label.textContent = row.label;
         setPill(binding.pill, row.value, row.tone || "off");
       });
+    }
+
+    function renderFacadeTeachingFeedback(feedback) {
+      if (!feedback) return;
+      refs.teachTitle.textContent = feedback.title || "Teaching Feedback";
+      refs.teachText.textContent = feedback.text || "";
+      refs.tipText.textContent = feedback.text || "";
+      refs.footerTip.textContent = feedback.text || "";
+      const tone = feedback.tone === "on" ? "success" : feedback.tone === "off" ? "info" : (feedback.tone || "info");
+      setActionFeedback({
+        actionId: "facade-output",
+        label: feedback.title || "Teaching Feedback",
+        tone,
+        feedbackText: feedback.text || ""
+      });
+      renderActionFeedback();
+    }
+
+    function handleFacadeOutput(output) {
+      if (!output) return;
+      if (output.operationViewModel) renderFacadeOperationViewModel(output.operationViewModel);
+      renderCurrentFacadeStatusViewModel();
+      renderFacadeTeachingFeedback(output.feedback);
     }
 
     function getLegacyCircuitData(routeId) {
@@ -13773,6 +14012,9 @@
 
       platformModuleRegistry = platform.registry.createModuleRegistry(platform.contracts);
       const registrations = [
+        platform.moduleDefinitions.createCh01Jog(),
+        platform.moduleDefinitions.createCh01DirectStartProtection(),
+        platform.moduleDefinitions.createCh01TimedAutoStop(),
         platform.moduleDefinitions.createCh02MainControl({
           circuitData: getLegacyCircuitData("main-control"),
           port: createMainControlModulePort()
@@ -13788,7 +14030,15 @@
         platform.moduleDefinitions.createCh02Reverse({
           circuitData: getLegacyCircuitData("forward-reverse"),
           port: createReverseModulePort()
-        })
+        }),
+        platform.moduleDefinitions.createCh02MixedControl(),
+        platform.moduleDefinitions.createCh02MultisiteControl(),
+        platform.moduleDefinitions.createCh02MachineToolCircuits(),
+        platform.moduleDefinitions.createCh02TwoMotorSequence({
+          baseCircuitData: getLegacyCircuitData("main-control")
+        }),
+        platform.moduleDefinitions.createCh02ManualStarDelta(),
+        platform.moduleDefinitions.createCh02TimeSequence()
       ];
       registrations.forEach((definition) => platformModuleRegistry.register(definition));
 
@@ -13802,8 +14052,12 @@
 
       platformModuleLoader = platform.loader.createModuleLoader({
         registry: platformModuleRegistry,
-        mountRoot: refs.experimentRoot,
-        services: Object.freeze({ setActionFeedback }),
+        mountRoot: refs.chapterModuleCanvas,
+        services: Object.freeze({
+          setActionFeedback,
+          onFacadeOutput: handleFacadeOutput,
+          renderShell: () => render()
+        }),
         setActiveModuleId: (routeId) => {
           uiState.currentModule = routeId;
           state.actionFeedback = {
@@ -13995,6 +14249,12 @@
       setSimulationMode("preview");
       setSimulationPreviewPreset("ki2_energized_preview");
       render();
+    });
+
+    refs.moduleExtraControls.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-facade-slot]");
+      if (!button || !refs.moduleExtraControls.contains(button)) return;
+      dispatchCurrentFacadeControl(button.dataset.facadeSlot);
     });
 
     refs.toggleQf.addEventListener("click", handleCloseQfButtonClick);
