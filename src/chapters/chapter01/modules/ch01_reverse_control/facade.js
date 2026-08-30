@@ -6,8 +6,10 @@
   const ROUTE_ID = "ch01-reverse-control";
   const clone = (value) => JSON.parse(JSON.stringify(value));
 
-  function createFacade({ port }) {
+  function createFacade({ port, context = {}, circuitData }) {
     const contracts = platform.contracts;
+    const renderer = platform.moduleRenderers.createCh01ReverseRenderer();
+    let mounted = false;
     const raw = () => port.readRawState();
     function getStateSnapshot() {
       const current = raw(); const s = current.solver; const direction = s.motorState || "stopped";
@@ -53,9 +55,11 @@
       else if (action.type === "STOP_PRESS") port.pressStop();
       else if (action.type === "RESET_MODULE") port.reset();
       else if (!["POWER_CLOSE", "POWER_OPEN"].includes(action.type)) throw new Error(`${MODULE_ID} does not support ${action.type}`);
+      render(); context.services?.renderShell?.();
       return { action, state: getStateSnapshot(), solverResult: normalizeSolverResult(), operationViewModel: getOperationViewModel(), statusViewModel: getStatusViewModel(), feedback: clone(port.getFeedback()) };
     }
-    return Object.freeze({ createInitialState: () => { port.reset(); return getStateSnapshot(); }, getStateSnapshot, dispatchAction, solve: (message = "facade solve") => { port.solve(message); return normalizeSolverResult(); }, normalizeSolverResult, getOperationViewModel, getStatusViewModel, buildTeachingFeedback: () => clone(port.getFeedback()), buildReplaySteps: () => clone(port.getReplaySteps()), mount: () => undefined, render: () => port.render(), reset: () => { port.reset(); return getStateSnapshot(); }, pause: () => port.pause(), resume: () => undefined, unmount: () => port.unmount(), validateGeometry: () => port.validateGeometry(), runTests: () => port.runTests() });
+    function render() { if (mounted && context.mountRoot) renderer.render({ root: context.mountRoot, circuitData, internalState: raw(), solverResult: normalizeSolverResult() }); }
+    return Object.freeze({ createInitialState: () => { port.reset(); return getStateSnapshot(); }, getStateSnapshot, dispatchAction, solve: (message = "facade solve") => { port.solve(message); render(); return normalizeSolverResult(); }, normalizeSolverResult, getOperationViewModel, getStatusViewModel, buildTeachingFeedback: () => clone(port.getFeedback()), buildReplaySteps: () => clone(port.getReplaySteps()), mount: () => { mounted = true; }, render, reset: () => { port.reset(); render(); return getStateSnapshot(); }, pause: () => port.pause(), resume: () => undefined, unmount: () => { mounted = false; if (context.mountRoot) context.mountRoot.replaceChildren(); port.unmount(); }, validateGeometry: () => port.validateGeometry(), runTests: () => port.runTests() });
   }
   platform.moduleFacades.createCh01ReverseFacade = createFacade;
 })(globalThis);
